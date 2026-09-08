@@ -32,7 +32,7 @@
         <dropwizard.version>5.0.2</dropwizard.version>
         <jetty.version>12.1.10</jetty.version>
         <jersey.version>3.1.10</jersey.version>
-        <netty.version>4.2.16.Final</netty.version>
+        <netty.version>4.2.17.Final</netty.version>
         <logback.version>1.5.33</logback.version>
         <cxf.version>3.4.5</cxf.version>
         <prometheus.version>0.16.0</prometheus.version>
@@ -200,11 +200,6 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-transport-native-epoll</artifactId>
             <version>${netty.version}</version>
         </dependency>
         <dependency>
@@ -417,6 +412,21 @@
                  The directly-declared jetty-http and jetty-io already use ${jetty.version};
                  these entries ensure all Jetty artifacts resolve to the same patched version. -->
             <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport-native-epoll</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpcore5</artifactId>
+                <version>5.4.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpcore5-h2</artifactId>
+                <version>5.4.3</version>
+            </dependency>
+            <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-security</artifactId>
                 <version>${jetty.version}</version>
@@ -441,20 +451,19 @@
                 <artifactId>jetty-util</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
-            <!-- Pin netty-codec* to fix CVE — transitive via dropwizard-metrics-graphite
-                 -> metrics-graphite:4.2.39 -> amqp-client:5.30.0 which pins netty 4.2.12.Final.
-                 dependencyManagement overrides the resolved version without adding these
-                 artifacts as new direct compile dependencies to the classpath. -->
             <dependency>
                 <groupId>com.rabbitmq</groupId>
                 <artifactId>amqp-client</artifactId>
-                <version>5.34.0</version>
+                <version>5.35.0</version>
             </dependency>
             <dependency>
                 <groupId>at.yawk.lz4</groupId>
                 <artifactId>lz4-java</artifactId>
-                <version>1.11.1</version>
+                <version>1.11.2</version>
             </dependency>
+            <!-- Pin netty-codec* to fix CVE — transitive via amqp-client which
+                 pins netty 4.2.12.Final. dependencyManagement overrides the resolved version
+                 without adding these artifacts as new direct compile dependencies to the classpath. -->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-codec</artifactId>
@@ -476,7 +485,6 @@
                 <version>${netty.version}</version>
             </dependency>
         </dependencies>
-
     </dependencyManagement>
 
     <build>
