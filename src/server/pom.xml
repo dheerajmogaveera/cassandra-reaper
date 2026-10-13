@@ -30,9 +30,9 @@
 
     <properties>
         <dropwizard.version>5.0.2</dropwizard.version>
-        <jetty.version>12.1.10</jetty.version>
+        <jetty.version>12.1.12</jetty.version>
         <jersey.version>3.1.10</jersey.version>
-        <logback.version>1.5.33</logback.version>
+        <logback.version>1.5.34</logback.version>
         <cxf.version>3.4.5</cxf.version>
         <prometheus.version>0.16.0</prometheus.version>
         <maven.compiler.source>17</maven.compiler.source>
@@ -117,6 +117,14 @@
             <groupId>io.dropwizard.modules</groupId>
             <artifactId>dropwizard-cassandra</artifactId>
             <version>4.0.0</version>
+            <!-- org.lz4 is the abandoned coordinate for the same net.jpountz classes as at.yawk.lz4;
+                 keeping both lets the unpatched copy end up in the shaded jar. -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.lz4</groupId>
+                    <artifactId>lz4-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -129,12 +137,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.21.4</version>
+            <version>2.21.7</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.21.4</version>
+            <version>2.21.7</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -420,9 +428,19 @@
                 <version>5.4.3</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>5.6.4</version>
+            </dependency>
+            <dependency>
                 <groupId>com.rabbitmq</groupId>
                 <artifactId>amqp-client</artifactId>
-                <version>5.33.1</version>
+                <version>5.37.0</version>
+            </dependency>
+            <dependency>
+                <groupId>at.yawk.lz4</groupId>
+                <artifactId>lz4-java</artifactId>
+                <version>1.11.4</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
