@@ -1,0 +1,48 @@
+name: Fork release
+
+on:
+  push:
+    tags:
+      - '*-cve-fixes-*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '10.x'
+
+      - name: Build and test
+        run: mvn -B -pl src/server -am package
+
+      - name: Package release tarball
+        run: |
+          VERSION=$(mvn -q -B help:evaluate -Dexpression=project.version -DforceStdout)
+          DIR=cassandra-reaper-${VERSION}
+          mkdir -p ${DIR}/server/target
+          cp -R src/packaging/bin src/packaging/resource ${DIR}/
+          cp src/server/target/cassandra-reaper-${VERSION}*.jar ${DIR}/server/target/
+          tar czf ${DIR}-release.tar.gz ${DIR}/
+          sha256sum ${DIR}-release.tar.gz > ${DIR}-release.tar.gz.sha256
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            cassandra-reaper-${VERSION}-release.tar.gz \
+            cassandra-reaper-${VERSION}-release.tar.gz.sha256 \
+            --title "${GITHUB_REF_NAME}" \
+            --notes "Reaper ${VERSION} with patched dependency pins (commit ${GITHUB_SHA})."
